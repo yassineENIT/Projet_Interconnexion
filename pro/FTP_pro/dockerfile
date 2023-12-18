@@ -1,1 +1,37 @@
-#a faire ...
+# Disable IPv6 for IPv4-only environments
+IPv6_Enable                   no
+
+# Turn off ident lookups to reduce connection delays
+Ident_Lookups                 no
+
+# Create a new user 'enseeiht_user'
+adduser enseeiht_user
+
+# Set password for 'enseeiht_user'
+echo "enseeiht_user:password123" | passwd --stdin enseeiht_user
+
+# Create a home directory for 'enseeiht_user'
+mkdir -p /home/enseeiht_user
+
+# Set ownership of the home directory
+chown enseeiht_user:enseeiht_user /home/enseeiht_user
+
+# Set the default shell for 'enseeiht_user'
+usermod -s /bin/bash enseeiht_user
+
+# Configure hostname for FTP server
+hostname FTP_Server
+echo "12.12.42.196 FTP_Server" >> /etc/hosts
+
+# Restrict write permissions
+chmod o-w /etc/proftpd.conf /etc/proftpd/modules.conf /etc/proftpd/proftpd.conf
+
+# Start the ProFTPD service
+systemctl start proftpd
+
+# Create a test message file
+cat <<EOT >> /home/enseeiht_user/welcome_msg.txt
+Welcome to enseeiht_user's FTP server!
+Your FTP service is functioning correctly.
+Excellent work.
+EOT
